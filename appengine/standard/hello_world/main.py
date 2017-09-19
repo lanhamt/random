@@ -13,14 +13,41 @@
 # limitations under the License.
 
 import webapp2
+import random
 
+from datastore_manager import DatastoreManager
+
+FLIP_THRESH = 0.5
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write('Hello, World!')
+        self.response.write('Welcome to random generator!')
+
+
+class CoinFlip(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.write('- - - Coin Flip - - -\n\n')
+        
+        id = self.request.path.split('/')[-1]
+        
+        datastore = DatastoreManager(id)
+        
+        flip = random.random() < FLIP_THRESH
+        if flip:
+        	self.response.write('HEADS!')
+        else:
+        	self.response.write('TAILS!')
+        	
+        self.response.write('\n\nHistory:\n')
+        
+        if datastore.has_id():
+        	self.response.write('\tabc...\n')
+        else:
+        	self.response.write('\tno other flips yet :)\n')
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/', MainPage), ('/flip/.*', CoinFlip)
 ], debug=True)
