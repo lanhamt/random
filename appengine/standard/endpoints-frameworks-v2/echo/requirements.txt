@@ -1,2 +1,0 @@
-google-endpoints==2.2.2
-google-endpoints-api-management==1.1.3
